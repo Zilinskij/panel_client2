@@ -1,19 +1,40 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import CompanyList from "@/components/company/tableCompanyList";
+import { WelcomeMessage } from "@/components/myStyledComponents/welcomeMessage";
+import { Button } from "@/components/ui/button";
+import instance from "@/lib/axios";
+import { RootState } from "@/store/store";
+import { ArrowRightFromLine } from "lucide-react";
+import { useSelector } from "react-redux";
 
 export default function UserPage() {
-  const router = useRouter();
+  const { name } = useSelector((state: RootState) => state.user);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("role");
-
-    if (!token || role !== "user") {
-      router.push("/login");
+  const handleLogout = async () => {
+    try {
+      await instance.post("/auth/logout");
+      window.location.replace("/login");
+    } catch (error) {
+      console.log("Помилка виходу: ", error);
     }
-  }, []);
+  };
 
-  return <h2 className="text-green-400">Панель користувача</h2>;
+  return (
+    <div className="p-5">
+      <div className="flex justify-between">
+        <WelcomeMessage />
+        <h2 className="text-xl text-blue-400">Сторінка користувача {name}</h2>
+        <Button
+          onClick={handleLogout}
+          className="border-red-300"
+          variant="outline"
+        >
+          Вийти
+          <ArrowRightFromLine />
+        </Button>
+      </div>
+      <CompanyList />
+    </div>
+  );
 }

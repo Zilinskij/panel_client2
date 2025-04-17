@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { instance } from "@/lib/axios";
-import { Button } from "../ui/button";
+import instance from "@/lib/axios";
+import { Button } from "@/components/ui/button";
 import EditCompanyModal from "./editCompanyModal";
 import {
   Dialog,
@@ -10,7 +10,14 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
+import getColumns from "@/components/company/column";
+import { DataTable } from "../ui/data-table";
+import React from "react";
+import ProgressBar from "../myStyledComponents/progressBar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+
 type Company = {
   id: number;
   imjakompanii: string;
@@ -51,7 +58,7 @@ export default function CompanyList() {
   const handleDelete = async (id: number) => {
     setLoading(true);
     try {
-      await instance.delete(`/company/${id}`);
+      await instance.delete(`/delete/${id}`);
       setCompanies((prevCompanies) =>
         prevCompanies.filter((company) => company.id !== id)
       );
@@ -64,65 +71,18 @@ export default function CompanyList() {
     }
   };
 
-  if (loading) return <p>Завантаження...</p>;
+  const { role } = useSelector((state: RootState) => state.user);
+ 
+
+  if (loading) return <ProgressBar start={5} duration={150} end={90} />;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl mb-4">Компанії</h2>
-      <table className="w-full border ">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="p-2 border">ID</th>
-            <th className="p-2 border">Назва</th>
-            <th className="p-2 border">Код компанії</th>
-            <th>Директор</th>
-            <th>Заснована</th>
-            <th>Номер телефону</th>
-            <th>Адреса</th>
-            <th>Кількість працівників</th>
-            <th>Кількісь авто</th>
-            <th>Кількість причепів</th>
-            <th>Компанія - страхувальник</th>
-            <th className="p-2 border">Дії</th>
-          </tr>
-        </thead>
-        <tbody>
-          {companies.map((company) => (
-            <tr key={company.id} className="hover:bg-gray-50">
-              <td className="p-2 border">{company.id}</td>
-              <td className="p-2 border">{company.imjakompanii}</td>
-              <td className="p-2 border">{company.kodkompanii}</td>
-              <td className="p-2 border">{company.dyrector}</td>
-              <td className="p-2 border">{company.stvorena}</td>
-              <td className="p-2 border">{company.nomertel}</td>
-              <td className="p-2 border">{company.adresa}</td>
-              <td className="p-2 border">{company.kilkprac}</td>
-              <td className="p-2 border">{company.kilkavto}</td>
-              <td className="p-2 border">{company.kilkprychepiv}</td>
-              <td className="p-2 border">{company.strahfirm}</td>
-              <td className="p-2 border text-center">
-                <div>
-                  <Button
-                    variant="outline"
-                    onClick={() => setSelectedCompany(company)}
-                    className="border-amber-400 mx-2"
-                  >
-                    ✏️ Редагувати
-                  </Button>
-                  <Button
-                    variant={"outline"}
-                    className="border-red-400 mx-2"
-                    onClick={() => setDeleteCompany(company.id)}
-                  >
-                    Видалити
-                  </Button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DataTable
+        columns={getColumns(setSelectedCompany, setDeleteCompany, role)}
+        data={companies}
+      />
 
       {selectedCompany && (
         <EditCompanyModal

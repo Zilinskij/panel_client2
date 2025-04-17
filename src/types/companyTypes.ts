@@ -1,7 +1,7 @@
-export type Props = {
+export interface Props {
   children: React.ReactNode;
   allowedRoles: string[];
-};
+}
 
 export interface Table {
   imjakompanii: string;
@@ -9,17 +9,35 @@ export interface Table {
 }
 
 export type Company = {
-  id: number;
+  id: number | any;
   imjakompanii: string;
-  kodkompanii?: number | string
+  kodkompanii?: number | string;
   dyrector?: string;
-  stvorena?: string;
-  nomertel?: number;
+  stvorena?: string | number;
+  nomertel?: number | string;
   adresa?: string;
-  kilkprac?: number;
-  kilkprychepiv?: number;
-  kilkavto?: number;
+  kilkprac?: number | string;
+  kilkprychepiv?: number | string;
+  kilkavto?: number | string;
   strahfirm?: string;
 };
 
+export interface InitialValuesProps {
+  imjakompanii: string | null;
+  kodkompanii?: string | null;
+  nomertel?: string | null;
+  stvorena?: string | null;
+  adresa?: string | null;
+  kilkprac?: string | null;
+  kilkprychepiv?: string | null;
+  dyrector?: string | null;
+  kilkavto: string | null;
+  strahfirm?: string | null;
+}
 
+export interface CompanyFormProps {
+  name: string;
+  label: string;
+  placeholder: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}

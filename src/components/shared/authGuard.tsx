@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Props } from "@/types/props";
+import { Props } from "@/types/companyTypes";
 import { jwtDecode } from "jwt-decode";
 
 type Role = "admin" | "user";

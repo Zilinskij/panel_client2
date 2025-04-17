@@ -1,4 +1,4 @@
-import { instance } from "@/lib/axios";
+import instance  from "@/lib/axios";
 
 export async function loginUser(email: string, password: string) {
   try {
