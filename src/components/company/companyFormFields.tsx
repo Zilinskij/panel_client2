@@ -2,6 +2,7 @@ import { FormikProps } from "formik";
 import { CompanyFormField } from "./companyFormField";
 
 type Props = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   formik?: FormikProps<any>;
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { companyProductSchema } from "@/validations/company/company.validations";
 import { CompanyFormFields } from "./companyFormFields";
 import { Formik, Form } from "formik";

@@ -9,6 +9,7 @@ export interface Table {
 }
 
 export type Company = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   id: number | any;
   imjakompanii: string;
   kodkompanii?: number | string;
@@ -40,4 +41,20 @@ export interface CompanyFormProps {
   label: string;
   placeholder: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+export interface ClientsValue {
+  kod: number;
+  nurdokl: string;
+  nurdoklfix: string;
+  nur: string;
+  adrpunkt: string;
+  adrvul: string;
+  director: string;
+  isclient: boolean;
+  ispostach: boolean;
+  iselse: string;
+  isexp: boolean;
+  permn: string;
+  pernegabarit: string;
 }

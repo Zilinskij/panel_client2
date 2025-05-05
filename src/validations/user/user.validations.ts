@@ -6,4 +6,5 @@ export const userRegisterSchema = Yup.object().shape({
     .required("Вкажіть електронну пошту")
     .email("Невірний формат"),
   password: Yup.string().required("Вкажіть пароль"),
+  surname: Yup.string().required("Прізвище обовякзково"),
 });

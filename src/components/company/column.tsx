@@ -8,7 +8,6 @@ import { OctagonX, PencilLine } from "lucide-react";
 export default function getColumns(
   onEdit: (company: Company) => void,
   onDelete: (id: number) => void,
-  role: string
 ): ColumnDef<Company>[] {
   return [
     {
@@ -58,7 +57,7 @@ export default function getColumns(
       header: "Дії",
       cell: ({ row }) => {
         const company = row.original;
-        return role === "admin" ? (
+        return (
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -77,7 +76,7 @@ export default function getColumns(
               Видалити
             </Button>
           </div>
-        ) : null;
+        )
       },
     },
   ];

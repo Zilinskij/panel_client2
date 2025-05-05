@@ -1,0 +1,102 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ClientsIst } from "@/types/companyClients";
+import { Status } from "../enums/status";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import instance from "@/lib/axios";
+
+export type Client = ClientsIst;
+
+type ClientsState = {
+  clients: Client[];
+  status: Status;
+  error: string | null;
+  selectedClient: Client | null;
+  totalPages: number;
+};
+
+const initialState: ClientsState = {
+  clients: [],
+  status: Status.IDLE,
+  error: null,
+  selectedClient: null,
+  totalPages: 10,
+};
+
+export const fetchClients = createAsyncThunk<
+  { data: Client[]; totalPages: number },
+  { limit: number; page: number },
+  { rejectValue: string }
+>("fetchClients", async ({ limit, page }, { rejectWithValue }) => {
+  try {
+    const res = await instance.get(`/companyes?limit=${limit}&page=${page}`);
+    console.log(res.data.pagination.totalPages);
+    return { data: res.data.data, totalPages: res.data.pagination.totalPages };
+  } catch (error) {
+    return rejectWithValue("Помилка отримання даних (клієнтів)");
+  }
+});
+
+export const editClients = createAsyncThunk<
+  Client,
+  Client,
+  { rejectValue: string }
+>("editClients", async (company, { rejectWithValue }) => {
+  try {
+    console.log(company, '- company companyEdit');
+
+    const res = await instance.put(`/companyes/update/${company.kod}`, company);
+    console.log(res.data, '- companyEdit');
+
+    return res.data;
+  } catch (error) {
+    return rejectWithValue("Помилка редагування даних (клієнтів)");
+  }
+});
+
+export const clientsSlice = createSlice({
+  name: "clients",
+  initialState,
+  reducers: {
+    setSelectedClient: (state, action: PayloadAction<Client>) => {
+      state.selectedClient = action.payload;
+    },
+    clearSelectedClient: (state) => {
+      state.selectedClient = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchClients.pending, (state) => {
+        state.status = Status.LOADING;
+      })
+      .addCase(fetchClients.fulfilled, (state, action) => {
+        state.status = Status.SUCCESS;
+        state.clients = action.payload.data;
+        state.totalPages = action.payload.totalPages;
+      })
+      .addCase(fetchClients.rejected, (state, action) => {
+        state.status = Status.FAILED;
+        state.error = action.payload ?? null;
+      })
+      .addCase(editClients.pending, (state) => {
+        state.status = Status.LOADING;
+      })
+      .addCase(editClients.fulfilled, (state, action) => {
+        state.status = Status.SUCCESS;
+        const updateClient = action.payload;
+        const index = state.clients.findIndex(
+          (client) => client.kod === updateClient.kod
+        );
+        if (index !== -1) {
+          state.clients[index] = updateClient;
+        }
+      })
+      .addCase(editClients.rejected, (state, action) => {
+        state.status = Status.FAILED;
+        state.error = action.payload ?? null;
+      });
+  },
+});
+
+export const { setSelectedClient, clearSelectedClient } = clientsSlice.actions;
+export default clientsSlice.reducer;

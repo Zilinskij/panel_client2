@@ -9,8 +9,8 @@ import {
 } from "../ui/sheet";
 
 import { EditCompanyForm } from "./editCompanyForm";
-import { useState, useEffect } from "react";
-import { log } from "util";
+import { useState } from "react";
+import { ClientsValue } from "@/types/companyTypes";
 
 type Props = {
   company: {
@@ -28,6 +28,7 @@ type Props = {
   };
   onClose: () => void;
   onUpdate: (updatedCompany: Props["company"]) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSubmit?: (values: any, formikHelpers: any) => void;
 };
 
@@ -35,7 +36,6 @@ export default function EditCompanyModal({
   company,
   onClose,
   onUpdate,
-  onSubmit,
 }: Props) {
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -54,19 +54,7 @@ export default function EditCompanyModal({
   };
 
   const handleSubmit = async (
-    values: {
-      id: number;
-      imjakompanii: string;
-      kodkompanii?: number | string;
-      dyrector?: string;
-      stvorena?: string | number;
-      nomertel?: number | string;
-      adresa?: string;
-      kilkprac?: number | string;
-      kilkprychepiv?: number | string;
-      kilkavto?: number | string;
-      strahfirm?: string;
-    },
+    values: ClientsValue,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     { setSubmitting, setStatus }: any
   ) => {

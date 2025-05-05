@@ -7,20 +7,19 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { setModalState } from "@/store/modals/modalsSlice";
-import { forLogin } from "@/store/user/userSlice";
+import { forLogin, getMe } from "@/store/user/userSlice";
+
 
 export default function LoginPage() {
   const dispatch = useDispatch<AppDispatch>();
-  const userModal = useSelector(
-    (state: RootState) => state.modals.createUserModal
-  );
+  const [systemMessage, setSystemMessage] = useState<string>("");
 
   const [form, setForm] = useState<Login>({
     email: "",
     password: "",
   });
-  const { role, error } = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.user.currentUser);
+  // const isLoading = useSelector((state: RootState) => state.user.status);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,34 +28,41 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await dispatch(forLogin(form));
+    const result = await dispatch(forLogin(form));
+    console.log(result, "result === login dispatch");
+
+    if (result.payload.error_message) {
+      setSystemMessage(result.payload.error_message);
+      setTimeout(() => {
+        setSystemMessage("");
+      }, 2000);
+    }
+
+    console.log(result, "RESULT !!!!");
   };
 
   useEffect(() => {
-    if (role === "admin") {
+    dispatch(getMe());
+  }, []);
+
+  useEffect(() => {
+    if (user?.email && user?.id) {
       router.push("/admin");
-    } else if (role === "user") {
-      router.push("/user");
     }
-  }, [role]);
+  }, [user,router]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
-  const setModalStateChange = () => {
-    dispatch(setModalState(true));
-    setTimeout(() => {
-      dispatch(setModalState(false));
-    }, 2000);
-  };
+
+  // if (isLoading === Status.LOADING || isLoading === Status.SUCCESS) {
+  //   return null;
+  // }
 
   return (
     <div className="m-6 bg-muted/30 p-4 text-center rounded-md">
       <h1 className="text-xl font-medium pb-4">Виконайте вхід</h1>
-      <Button onClick={setModalStateChange} className="mb-2" variant="outline">
-        STATE CHANGE
-      </Button>
-
       <form onSubmit={handleLogin} className="space-y-4">
+      {systemMessage && <span>{systemMessage}</span>}
+
         <Input
           type="email"
           name="email"
@@ -77,8 +83,6 @@ export default function LoginPage() {
           Вхід
         </Button>
       </form>
-      {error && <p className="text-blue-400 mt-6">{error}</p>}
-      {userModal && <span>Everything is okay...user modal open</span>}
     </div>
   );
 }

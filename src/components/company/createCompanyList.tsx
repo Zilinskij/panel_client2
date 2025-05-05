@@ -1,4 +1,5 @@
-import { ErrorMessage, Field, Form, Formik, FormikProps } from "formik";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Form, Formik, FormikProps } from "formik";
 import {
   Sheet,
   SheetClose,
@@ -10,13 +11,11 @@ import {
 } from "../ui/sheet";
 import { companyProductSchema } from "@/validations/company/company.validations";
 import instance from "@/lib/axios";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useEffect, useState } from "react";
 import { getStorageValuesByKey } from "@/helpers/localStorage";
 import { InitialValuesProps } from "@/types/companyTypes";
 import { CompanyFormFields } from "./companyFormFields";
+import { toast } from "sonner";
 
 type Props = {
   onClose: () => void;
@@ -53,20 +52,22 @@ export default function CreateCompany({
     setSubmitting(true);
     try {
       const res = await instance.post("/company/register", values);
-      // localStorage.setItem("tester", JSON.stringify(res));
-      // const parsed = localStorage.getItem("tester");
-      // console.log(parsed);
+      localStorage.setItem("tester", JSON.stringify(res));
+      const parsed = localStorage.getItem("tester");
+      console.log("CREATE COM<PANJY LOCAL SYTORAGE", parsed);
 
-    
-      // console.log("RES from DB", res.data[0]);
-      // let arr = [];
-      // arr.push(res.data[0]);
-      // setArray(arr);
+      if (res.status == 200 || res.status == 201) {
+        alert("Success");
+        onCreate();
+        onClose();
+      }
+      console.log(res.status, 'create status');
       
-      // if (res.status == 200 || res.status == 201) {
-      onCreate();
-      onClose();
-      // }
+      if (res.status === 401) {
+        toast("Autorized please", {
+          duration: 2000,
+        });
+      }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       setStatus("Помилка при створенні");
@@ -82,7 +83,6 @@ export default function CreateCompany({
     try {
       const res = await instance.get("/company");
       const data = res.data;
-      // console.log(data);
       localStorage.setItem("data-test", JSON.stringify(data));
       const localData = localStorage.getItem("data-test");
       if (localData) {

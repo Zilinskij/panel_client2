@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { setModalState } from "@/store/modals/modalsSlice";
 import { RootState } from "@/store/store";
+import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -22,7 +23,7 @@ export function WelcomeMessage() {
     dispatch(setModalState(true));
     setTimeout(() => {
       dispatch(setModalState(false));
-    }, 2000);
+    }, 2200);
   };
   useEffect(() => {
     setModalStateChange();
@@ -32,7 +33,8 @@ export function WelcomeMessage() {
     <AlertDialog open={message}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogDescription className="text-2xl text-red-500">
+          <AlertDialogTitle className="text-xl text-blue-800">Вхід успішний</AlertDialogTitle>
+          <AlertDialogDescription className="text-2xl text-blue-700">
             {`Вітаємо на сторінці профілю, ${name}`}
           </AlertDialogDescription>
         </AlertDialogHeader>

@@ -17,6 +17,8 @@ import React from "react";
 import ProgressBar from "../myStyledComponents/progressBar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
+// import { useSelector } from "react-redux";
+// import { RootState } from "@/store/store";
 
 type Company = {
   id: number;
@@ -38,6 +40,9 @@ export default function CompanyList() {
   const [error, setError] = useState("");
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [deleteCompany, setDeleteCompany] = useState<number | null>(null);
+  const succesMessage = useSelector(
+    (state: RootState) => state.user.succesMessage
+  );
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -71,16 +76,16 @@ export default function CompanyList() {
     }
   };
 
-  const { role } = useSelector((state: RootState) => state.user);
+  // const { role } = useSelector((state: RootState) => state.user);
  
 
-  if (loading) return <ProgressBar start={5} duration={150} end={90} />;
+  if (loading && !succesMessage) return <ProgressBar start={5} duration={150} end={90} />;
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
     <div className="p-6">
       <DataTable
-        columns={getColumns(setSelectedCompany, setDeleteCompany, role)}
+        columns={getColumns(setSelectedCompany, setDeleteCompany,)}
         data={companies}
       />
 
