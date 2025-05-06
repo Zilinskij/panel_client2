@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ClientsIst } from "@/types/companyClients";
 import { Status } from "../enums/status";
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import instance from "@/lib/axios";
 
 export type Client = ClientsIst;
@@ -42,16 +47,20 @@ export const editClients = createAsyncThunk<
   { rejectValue: string }
 >("editClients", async (company, { rejectWithValue }) => {
   try {
-    console.log(company, '- company companyEdit');
+    console.log(company, "- company companyEdit");
 
     const res = await instance.put(`/companyes/update/${company.kod}`, company);
-    console.log(res.data, '- companyEdit');
+    console.log(res.data, "- companyEdit");
 
     return res.data;
   } catch (error) {
     return rejectWithValue("Помилка редагування даних (клієнтів)");
   }
 });
+
+export const updateClientFromSocket = createAction<Client[]>(
+  "companyClient/updateFromSocket"
+);
 
 export const clientsSlice = createSlice({
   name: "clients",
@@ -62,6 +71,9 @@ export const clientsSlice = createSlice({
     },
     clearSelectedClient: (state) => {
       state.selectedClient = null;
+    },
+    updateClientFromSocket: (state, action) => {
+      state.clients = action.payload;
     },
   },
   extraReducers: (builder) => {

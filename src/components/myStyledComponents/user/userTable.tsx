@@ -109,7 +109,7 @@ const UserTable: React.FC = () => {
         })}
       </div>
         <Table className="min-w-[800px]">
-          <TableHeader className="bg-gray-100 sticky top-0">
+          <TableHeader className="bg-gray-100 sticky top-0 dark:bg-gray-600">
             {table.getHeaderGroups().map((headerGroup) => {
               return (
                 <TableRow key={headerGroup.id}>

@@ -3,7 +3,10 @@
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { clearSelectedClient, editClients } from "@/store/company/companyEdit";
+import {
+  clearSelectedClient,
+  editClients,
+} from "@/store/company/companyEdit";
 import { Input } from "../ui/input";
 import { useEffect, useState } from "react";
 import { ClientsIst } from "@/types/companyClients";
@@ -18,6 +21,8 @@ import {
 } from "../ui/sheet";
 import { Label } from "../ui/label";
 import { initialClient } from "./initialClient";
+import { Checkbox } from "../ui/checkbox";
+
 
 const ClientEditModal = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,7 +32,6 @@ const ClientEditModal = () => {
   );
 
   const [valueClient, setValueClient] = useState<ClientsIst>(initialClient);
-  const originalType = typeof valueClient;
 
   useEffect(() => {
     if (client) {
@@ -49,45 +53,35 @@ const ClientEditModal = () => {
         </SheetHeader>
         <div className="overflow-y-auto max-h-[80vh] py-4 px-2">
           {Object.entries(valueClient).map(([key, value]) => (
-            <>
-              <br />
-              <div className="grid items-center gap-4 py-1">
-                {originalType === "boolean" ? (
-                  <div className="flex items-center gap-2">
-                    <Label className="cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={value === true}
-                        onChange={(e) => {
-                          setValueClient({
-                            ...valueClient,
-                            [key]: e.target.checked,
-                          });
-                        }}
-                      />
-                      <span className="ml-2">Так / Ні</span>
-                    </Label>
-                  </div>
-                ) : (
-                  <Input
-                    id={key}
-                    value={value || ""}
-                    onChange={(e) => {
-                      const inputValue = e.target.value;
-                      const parsedValue =
-                        originalType === "number"
-                          ? Number(inputValue)
-                          : inputValue;
-                      setValueClient({
-                        ...valueClient,
-                        [key]: parsedValue,
-                      });
-                    }}
-                    className="col-span-3"
-                  />
-                )}
-              </div>
-            </>
+            <div key={key} className="grid items-center gap-4 py-1">
+              <Label htmlFor={key} className="capitalize">
+                {key}
+              </Label>
+              {typeof value === "boolean" ? (
+                <Checkbox
+                  id={key}
+                  checked={value}
+                  onCheckedChange={(checked) => {
+                    setValueClient({
+                      ...valueClient,
+                      [key]: !!checked,
+                    });
+                  }}
+                />
+              ) : (
+                <Input
+                  id={key}
+                  value={value || ""}
+                  onChange={(e) => {
+                    setValueClient({
+                      ...valueClient,
+                      [key]: e.target.value,
+                    });
+                  }}
+                  className="col-span-3"
+                />
+              )}
+            </div>
           ))}
         </div>
         <SheetFooter>
@@ -99,6 +93,7 @@ const ClientEditModal = () => {
                 dispatch(editClients(valueClient));
                 dispatch(clearSelectedClient());
               }}
+              className="border-green-400"
             >
               Зберегти
             </Button>

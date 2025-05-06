@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import instance from "@/lib/axios";
 import { HeaderMenu } from "./header.menu";
 import Link from "next/link";
+import { ModeToggle } from "../myStyledComponents/system/themeButton";
 
 const Header = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -38,22 +39,23 @@ const Header = () => {
     return null;
   }
   return (
-    <header className="sticky top-0 z-20 bg-gray-100">
-      <div className="flex justify-between mt-2 mx-4">
+    <header className="sticky top-0 z-20 bg-gray-100 dark:bg-gray-500">
+      <div className="flex justify-between mx-4 py-2">
         <div className="logo">
           <Link href={"/admin"}>
             <Dog className="w-[40px] h-[40px] bg-amber-300 rounded-sm" />
           </Link>
         </div>
-        <div className="header_menu py-1">
+        <div className="header_menu">
           <HeaderMenu />
         </div>
-        <div className="flex text-xl pp-2">
+        <div className="flex text-xl">
+        <ModeToggle />
           {user?.name ? (
-            <>
+            <div className="ml-4 flex">
               {user?.name}
               <UserRoundCheck className="w-[40px] h-[40px] bg-amber-300 rounded-sm mx-2" />
-            </>
+            </div>
           ) : (
             <Button variant="outline" onClick={autorization}>
               Авторизуватись
@@ -61,7 +63,7 @@ const Header = () => {
           )}
           <Button
             onClick={handleLogout}
-            className="border-red-300 "
+            className="border-red-300 mx-4"
             variant="outline"
           >
             Вийти

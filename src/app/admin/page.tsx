@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "@/store/store";
 import { getMe } from "@/store/user/userSlice";
 import { CirclePlus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { socket } from "@/lib/socket";
 
 export default function AdminPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -27,6 +28,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     dispatch(getMe());
+  }, []);
+  useEffect(() => {
+    socket.connect();
   }, []);
   useEffect(() => {
     if (!user?.id) {

@@ -10,7 +10,6 @@
      <div className="main">
        <Header />
        {children}
-      
      </div>
    );
  }

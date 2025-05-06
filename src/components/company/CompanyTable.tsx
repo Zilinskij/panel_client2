@@ -30,6 +30,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import { ClipboardPenLine } from "lucide-react";
+import { useClientSocket } from "@/hooks/useClientsSocket";
 
 type CompanyTableProps = {
   page: number;
@@ -44,6 +45,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
   setPage,
   setLimit,
 }) => {
+  useClientSocket();
   const dispatch = useDispatch<AppDispatch>();
   const { clients, status, error, totalPages } = useSelector(
     (state: RootState) => state.companyClients
@@ -97,7 +99,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
           accessorKey: "isclient",
           header: "Як клієнт",
           cell: ({ row }) => {
-            const value = row.getValue("isclint");
+            const value = row.getValue("isclient");
             return (
               <Checkbox
                 checked={!!value}
@@ -165,6 +167,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
         <Button variant="outline" onClick={() => setOpen(!open)}>
           {open ? "Приховати" : "Фільтрувати"}
         </Button>
+ 
         <div>
           {status === "success" && clients.length > 0 && (
             <>
@@ -200,43 +203,45 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                     })}
                   </div>
                 )}
-
-                <Table className="min-w-[800px]">
-                  <TableHeader className="bg-gray-100 sticky top-0 z-10">
-                    {table.getHeaderGroups().map((headerGroup) => (
-                      <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map((header) => (
-                          <TableHead
-                            key={header.id}
-                            colSpan={header.colSpan}
-                            className="text-center border-1"
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext()
-                                )}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    ))}
-                  </TableHeader>
-                  <TableBody>
-                    {table.getRowModel().rows.map((row) => (
-                      <TableRow key={row.id} className="">
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id} className="py-1">
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                
+                <div className="flex">
+                  <Table >
+                    <TableHeader className="bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">
+                      {table.getHeaderGroups().map((headerGroup) => (
+                        <TableRow key={headerGroup.id}>
+                          {headerGroup.headers.map((header) => (
+                            <TableHead
+                              key={header.id}
+                              colSpan={header.colSpan}
+                              className="text-center border-2 "
+                            >
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                            </TableHead>
+                          ))}
+                        </TableRow>
+                      ))}
+                    </TableHeader>
+                    <TableBody>
+                      {table.getRowModel().rows.map((row) => (
+                        <TableRow key={row.id} className="">
+                          {row.getVisibleCells().map((cell) => (
+                            <TableCell key={cell.id} className="py-1">
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
             </>
           )}
