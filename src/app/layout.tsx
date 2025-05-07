@@ -4,6 +4,7 @@ import "./globals.css";
 
 import StoreProvider from "./StoreProvider";
 import { ThemeProvider } from "@/components/myStyledComponents/system/themeProvider";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,10 +30,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <StoreProvider>
         <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-        <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster position="bottom-right" />
           </ThemeProvider>
         </body>
       </StoreProvider>

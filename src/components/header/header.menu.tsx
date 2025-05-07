@@ -17,10 +17,10 @@ import {
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
+    title: "Таблиця translaite",
+    href: "/admin/translateTable",
     description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+      "Таблиця з перекладами",
   },
   {
     title: "Hover Card",
@@ -65,24 +65,19 @@ export function HeaderMenu() {
                 <NavigationMenuLink asChild>
                   <Link
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/"
+                    href="/admin/users"
                   >
                     <div className="mb-2 mt-4 text-lg font-medium">
-                      shadcn/ui
+                      Користувачі
                     </div>
                     <p className="text-sm leading-tight text-muted-foreground">
-                      Beautifully designed components built with Radix UI and
-                      Tailwind CSS.
+                     Список користувачів
                     </p>
                   </Link>
                 </NavigationMenuLink>
               </li>
               <ListItem href={"/admin/users"} title="Користувачі">
                 Список користувачів
-              </ListItem>
-
-              <ListItem href="/docs/installation" title="Installation">
-                How to install dependencies and structure your app.
               </ListItem>
               <ListItem href="/docs/primitives/typography" title="Typography">
                 Styles for headings, paragraphs, lists...etc
@@ -99,24 +94,20 @@ export function HeaderMenu() {
                 <NavigationMenuLink asChild>
                   <Link
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/"
+                    href="/admin/companyes"
                   >
                     <div className="mb-2 mt-4 text-lg font-medium">
-                      shadcn/ui
+                      Компанії
                     </div>
                     <p className="text-sm leading-tight text-muted-foreground">
-                      Beautifully designed components built with Radix UI and
-                      Tailwind CSS.
+                    Список компаній, редагування даних
                     </p>
                   </Link>
                 </NavigationMenuLink>
               </li>
-              <ListItem href={"/admin/companyes"} title="Компанії">
-                Список компаній
-              </ListItem>
 
-              <ListItem href="/docs/installation" title="Installation">
-                How to install dependencies and structure your app.
+              <ListItem href="/admin/createCompany" title="Реєстрація компанії">
+                Створення нового запису в базі
               </ListItem>
               <ListItem href="/docs/primitives/typography" title="Typography">
                 Styles for headings, paragraphs, lists...etc

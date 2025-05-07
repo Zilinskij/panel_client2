@@ -29,8 +29,14 @@ import {
 import React from "react";
 import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import { ClipboardPenLine } from "lucide-react";
+import { ChevronDown, ClipboardPenLine } from "lucide-react";
 import { useClientSocket } from "@/hooks/useClientsSocket";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 type CompanyTableProps = {
   page: number;
@@ -54,7 +60,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
   const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [rowSelection, _setRowSelection] = React.useState({});
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState(page);
 
   const columns: ColumnDef<Client>[] = [
@@ -148,6 +154,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
     onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    columnResizeMode: "onChange",
     manualPagination: true,
     pageCount: totalPages,
   });
@@ -164,48 +171,43 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
         <ClientEditModal />
         {status === "loading" && <p>Завантаження...</p>}
         {status === "failed" && <p>Помилка: {error}</p>}
-        <Button variant="outline" onClick={() => setOpen(!open)}>
-          {open ? "Приховати" : "Фільтрувати"}
-        </Button>
- 
+
         <div>
           {status === "success" && clients.length > 0 && (
             <>
-              <div className="flex overflow-y-auto overflow-x-auto max-h-[85vh] pb-4">
-                {open && (
-                  <div className="px-4 border border-gray-300 flex-col ">
-                    <label>
-                      <input
-                        {...{
-                          type: "checkbox",
-                          checked: table.getIsAllColumnsVisible(),
-                          onChange:
-                            table.getToggleAllColumnsVisibilityHandler(),
-                        }}
-                      />{" "}
-                      Toggle All
-                    </label>
-                    {table.getAllLeafColumns().map((column) => {
+              <DropdownMenu>
+                <div className="flex justify-end">
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="mr-4 border-amber-400">
+                    Вибрати колонки <ChevronDown />
+                  </Button>
+                </DropdownMenuTrigger>
+                </div>
+                <DropdownMenuContent align="end">
+                  {table
+                    .getAllLeafColumns()
+                    .filter((column) => column.getCanHide())
+                    .filter((_, index) => index !== 1)
+                    .map((column) => {
                       return (
-                        <div key={column.id} className="px-1">
-                          <label>
-                            <input
-                              {...{
-                                type: "checkbox",
-                                checked: column.getIsVisible(),
-                                onChange: column.getToggleVisibilityHandler(),
-                              }}
-                            />{" "}
-                            {column.id}
-                          </label>
-                        </div>
+                        <DropdownMenuCheckboxItem
+                          key={column.id}
+                          className="capitalize"
+                          checked={column.getIsVisible()}
+                          onCheckedChange={(value) =>
+                            column.toggleVisibility(!!value)
+                          }
+                        >
+                          {column.columnDef.header?.toString() || column.id}
+                        </DropdownMenuCheckboxItem>
                       );
                     })}
-                  </div>
-                )}
-                
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <div className="flex overflow-y-auto overflow-x-auto max-h-[85vh] pb-4">
                 <div className="flex">
-                  <Table >
+                  <Table>
                     <TableHeader className="bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">
                       {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>

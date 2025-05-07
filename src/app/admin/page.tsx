@@ -11,6 +11,7 @@ import { getMe } from "@/store/user/userSlice";
 import { CirclePlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { socket } from "@/lib/socket";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function AdminPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -42,8 +43,6 @@ export default function AdminPage() {
     return null;
   }
 
-  // прослідкувати за fullfilled, pending бо при оновленні сторінки проскакує login
-
   return (
     <div className="px-5">
       <div>
@@ -72,6 +71,7 @@ export default function AdminPage() {
           />
         )}
       </div>
+      <Toaster />
     </div>
   );
 }

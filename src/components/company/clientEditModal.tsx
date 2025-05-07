@@ -3,10 +3,7 @@
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import {
-  clearSelectedClient,
-  editClients,
-} from "@/store/company/companyEdit";
+import { clearSelectedClient, editClients } from "@/store/company/companyEdit";
 import { Input } from "../ui/input";
 import { useEffect, useState } from "react";
 import { ClientsIst } from "@/types/companyClients";
@@ -22,7 +19,7 @@ import {
 import { Label } from "../ui/label";
 import { initialClient } from "./initialClient";
 import { Checkbox } from "../ui/checkbox";
-
+import { toast } from "sonner";
 
 const ClientEditModal = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -92,6 +89,7 @@ const ClientEditModal = () => {
               onClick={() => {
                 dispatch(editClients(valueClient));
                 dispatch(clearSelectedClient());
+                toast.success("Зміни внесено успішно");
               }}
               className="border-green-400"
             >

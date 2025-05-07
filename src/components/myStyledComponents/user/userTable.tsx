@@ -77,73 +77,43 @@ const UserTable: React.FC = () => {
 
   return (
     <>
-    
       <h2 className="text-xl font-bold mb-4">Користувачі</h2>
-      <div className="flex overflow-y-auto overflow-x-auto max-h-[85vh] pb-4">
-      <div className="px-4 border border-gray-300 flex-col ">
-        <label>
-          <input
-            {...{
-              type: "checkbox",
-              checked: table.getIsAllColumnsVisible(),
-              onChange: table.getToggleAllColumnsVisibilityHandler(),
-            }}
-          />{" "}
-          Toggle All
-        </label>
-        {table.getAllLeafColumns().map((column) => {
-          return (
-            <div key={column.id} className="px-1">
-              <label>
-                <input
-                  {...{
-                    type: "checkbox",
-                    checked: column.getIsVisible(),
-                    onChange: column.getToggleVisibilityHandler(),
-                  }}
-                />{" "}
-                {column.id}
-              </label>
-            </div>
-          );
-        })}
-      </div>
-        <Table className="min-w-[800px]">
-          <TableHeader className="bg-gray-100 sticky top-0 dark:bg-gray-600">
-            {table.getHeaderGroups().map((headerGroup) => {
-              return (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className="text-center border-2"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              );
-            })}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+      <div className="flex overflow-y-auto overflow-x-auto max-h-[85vh] pb-4"></div>
+      <Table className="min-w-[800px]">
+        <TableHeader className="bg-gray-100 sticky top-0 dark:bg-gray-600">
+          {table.getHeaderGroups().map((headerGroup) => {
+            return (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    className="text-center border-2"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
+            );
+          })}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </>
   );
 };
