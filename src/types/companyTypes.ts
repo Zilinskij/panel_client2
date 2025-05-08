@@ -58,3 +58,7 @@ export interface ClientsValue {
   permn: string;
   pernegabarit: string;
 }
+
+export type CustomColumnMeta = {
+  headerLabel?: string;
+};

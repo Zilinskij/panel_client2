@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Client,
-  fetchClients,
-  setSelectedClient,
-} from "@/store/company/companyEdit";
+import { fetchClients } from "@/store/company/companyEdit";
 import { AppDispatch, RootState } from "@/store/store";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,14 +18,14 @@ import {
   useReactTable,
   getCoreRowModel,
   getFilteredRowModel,
-  ColumnDef,
   flexRender,
   ColumnOrderState,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 import React from "react";
 import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
-import { ChevronDown, ClipboardPenLine } from "lucide-react";
+import { ArrowBigDownDash, ArrowBigUpDash, ChevronDown } from "lucide-react";
 import { useClientSocket } from "@/hooks/useClientsSocket";
 import {
   DropdownMenu,
@@ -37,6 +33,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { ClientsСolumns } from "./columns";
 
 type CompanyTableProps = {
   page: number;
@@ -62,85 +59,9 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
   const [rowSelection, _setRowSelection] = React.useState({});
   // const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState(page);
-
-  const columns: ColumnDef<Client>[] = [
-    {
-      header: "Оновна інформація",
-      columns: [
-        { accessorKey: "kod", header: "kod" },
-        {
-          id: "edit",
-          header: () => {
-            return <div className="">EDIT</div>;
-          },
-          cell: ({ row }) => {
-            const client = row.original;
-            return (
-              <div className="">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    dispatch(setSelectedClient(client));
-                  }}
-                  className="border-green-300"
-                >
-                  <ClipboardPenLine className="h-3 w-3" />
-                </Button>
-              </div>
-            );
-          },
-        },
-        { accessorKey: "nurdokl", header: "Мала назва підприємства" },
-        { accessorKey: "nurdoklfix", header: "Фіксована скорочена назва" },
-        { accessorKey: "nur", header: "Назва скорочена" },
-        { accessorKey: "adrpunkt", header: "Нас.пункт" },
-        { accessorKey: "adrvul", header: "Вулиця" },
-        { accessorKey: "director", header: "Керівник" },
-      ],
-    },
-    {
-      header: "Типи участі",
-      columns: [
-        {
-          accessorKey: "isclient",
-          header: "Як клієнт",
-          cell: ({ row }) => {
-            const value = row.getValue("isclient");
-            return (
-              <Checkbox
-                checked={!!value}
-                disabled
-                className="pointer-events-none"
-              />
-            );
-          },
-        },
-        {
-          accessorKey: "ispostach",
-          header: "Як постачальник",
-          cell: ({ row }) => {
-            const value = row.getValue("ispostach");
-            return (
-              <Checkbox
-                checked={!!value}
-                disabled
-                className="pointer-events-none"
-              />
-            );
-          },
-        },
-        { accessorKey: "iselse", header: "Як інший" },
-        { accessorKey: "isexp", header: "Як експедиція" },
-      ],
-    },
-    {
-      header: "Додатково",
-      columns: [
-        { accessorKey: "permn", header: "Перевезення міжміські" },
-        { accessorKey: "pernegabarit", header: "Возить негабарит" },
-      ],
-    },
-  ];
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [globalFilter, setGlobalFilter] = useState("");
+  const columns = ClientsСolumns(dispatch);
 
   const table = useReactTable({
     data: clients,
@@ -149,11 +70,16 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
       columnVisibility,
       columnOrder,
       rowSelection,
+      sorting,
+      globalFilter,
     },
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     onColumnOrderChange: setColumnOrder,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    onGlobalFilterChange: setGlobalFilter,
     columnResizeMode: "onChange",
     manualPagination: true,
     pageCount: totalPages,
@@ -177,11 +103,11 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
             <>
               <DropdownMenu>
                 <div className="flex justify-end">
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="mr-4 border-amber-400">
-                    Вибрати колонки <ChevronDown />
-                  </Button>
-                </DropdownMenuTrigger>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="mr-4 border-amber-400">
+                      Вибрати колонки <ChevronDown />
+                    </Button>
+                  </DropdownMenuTrigger>
                 </div>
                 <DropdownMenuContent align="end">
                   {table
@@ -198,7 +124,8 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                             column.toggleVisibility(!!value)
                           }
                         >
-                          {column.columnDef.header?.toString() || column.id}
+                          {column.columnDef.meta?.headerLabel?.toString() ||
+                            column.id}
                         </DropdownMenuCheckboxItem>
                       );
                     })}
@@ -215,14 +142,37 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                             <TableHead
                               key={header.id}
                               colSpan={header.colSpan}
-                              className="text-center border-2 "
+                              className="text-center border-2"
                             >
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
+                              <div className="flex items-center justify-center">
+                                {header.isPlaceholder ? null : (
+                                  <div className="flex items-center gap-1">
+                                    <div
+                                      onClick={(e) => {
+                                        if (
+                                          !(e.target as HTMLElement).closest(
+                                            "[data-filter-button]"
+                                          )
+                                        ) {
+                                          header.column.toggleSorting();
+                                        }
+                                      }}
+                                      className="cursor-pointer flex items-center gap-1"
+                                    >
+                                      {flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                      )}
+                                      {{
+                                        asc: <ArrowBigUpDash />,
+                                        desc: <ArrowBigDownDash />,
+                                      }[
+                                        header.column.getIsSorted() as string
+                                      ] ?? null}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </TableHead>
                           ))}
                         </TableRow>
