@@ -18,16 +18,18 @@ export function WelcomeMessage() {
     (state: RootState) => state.modals.createUserModal
   );
   const dispatch = useDispatch();
-
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const setModalStateChange = () => {
     dispatch(setModalState(true));
     setTimeout(() => {
       dispatch(setModalState(false));
     }, 2200);
   };
-  useEffect(() => {
-    setModalStateChange();
-  }, []);
+  
+    useEffect(() => {
+      setModalStateChange();
+    }, [setModalStateChange]);
 
   return (
     <AlertDialog open={message}>

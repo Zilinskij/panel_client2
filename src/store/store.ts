@@ -1,15 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import modalsReducer from "./modals/modalsSlice";
-import userReduser from "./user/userSlice";
-import clientsReduser from "./company/companyEdit";
+import userReducer from "./user/userSlice";
+import clientsReducer from "./company/companyEdit";
+import translateReducer from "./translate/translateSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       // ASYNC
-      companyClients: clientsReduser,
-      user: userReduser,
+      clients: clientsReducer,
+      user: userReducer,
+      translate: translateReducer,
       // LOCAL
       modals: modalsReducer,
     },

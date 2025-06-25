@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
-import { forLogin, getMe } from "@/store/user/userSlice";
+import { forLogin } from "@/store/user/userSlice";
 
 
 export default function LoginPage() {
@@ -41,9 +41,7 @@ export default function LoginPage() {
     console.log(result, "RESULT !!!!");
   };
 
-  useEffect(() => {
-    dispatch(getMe());
-  }, []);
+
 
   useEffect(() => {
     if (user?.email && user?.id) {

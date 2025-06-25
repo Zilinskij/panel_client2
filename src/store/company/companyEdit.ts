@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+"use client";
 import { ClientsIst } from "@/types/companyClients";
 import { Status } from "../enums/status";
 import {
@@ -67,6 +68,7 @@ export const clientsSlice = createSlice({
   initialState,
   reducers: {
     setSelectedClient: (state, action: PayloadAction<Client>) => {
+      console.log(action, "- action payload client redux");
       state.selectedClient = action.payload;
     },
     clearSelectedClient: (state) => {
@@ -74,6 +76,25 @@ export const clientsSlice = createSlice({
     },
     updateClientFromSocket: (state, action) => {
       state.clients = action.payload;
+    },
+    updateClient: (state, action) => {
+      //   const myObject = state.clients.find(obj => obj.kod === action.payload.kod)
+      // console.log('MY OBJECT', myObject);
+
+      // if (myObject) {
+      //   Object.assign(myObject,action.payload)
+      // }
+
+      //  state.clients.map(item =>{
+      //  return item?.id === action.payload.id ? {...item, ...action.payload} : item
+      // })
+
+      const index = state.clients.findIndex(
+        (obj) => obj.kod === action.payload.kod
+      );
+      if (index != -1) {
+        state.clients[index] = { ...state.clients[index], ...action.payload };
+      }
     },
   },
   extraReducers: (builder) => {
@@ -94,7 +115,6 @@ export const clientsSlice = createSlice({
         state.status = Status.LOADING;
       })
       .addCase(editClients.fulfilled, (state, action) => {
-        state.status = Status.SUCCESS;
         const updateClient = action.payload;
         const index = state.clients.findIndex(
           (client) => client.kod === updateClient.kod
@@ -110,5 +130,6 @@ export const clientsSlice = createSlice({
   },
 });
 
-export const { setSelectedClient, clearSelectedClient } = clientsSlice.actions;
+export const { setSelectedClient, clearSelectedClient, updateClient } =
+  clientsSlice.actions;
 export default clientsSlice.reducer;

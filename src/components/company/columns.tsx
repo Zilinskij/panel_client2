@@ -32,6 +32,8 @@ export const ClientsСolumns = (
         },
         cell: ({ row }) => {
           const client = row.original;
+          console.log(client, '- client from columns');
+          
           return (
             <div className="">
               <Button

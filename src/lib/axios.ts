@@ -15,7 +15,6 @@ instance.interceptors.response.use(
       try {
         await axios.get(
           `${API_URL}/auth/getme`,
-       
           { withCredentials: true }
         );
         return instance(originalRequest);

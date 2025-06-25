@@ -5,17 +5,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Status } from "../enums/status";
 import { UserIst } from "@/types/user";
 
-// interface UserState {
-//   name: string;
-//   email: string;
-//   password: string;
-//   loading: boolean;
-//   error: string | null;
-//   token: string | null;
-//   role: string;
-// }
-
-// Оголошуємо типи для одного користувача
 interface User {
   id: number;
   last_name: string;
@@ -43,7 +32,6 @@ export interface IUserCredentials {
   password: string;
 }
 
-// Ініціалізація початкового стану
 const initialState: UserState = {
   currentUser: null,
   status: Status.IDLE,
@@ -119,11 +107,9 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(forLogin.pending, (state) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         state.status = Status.LOADING;
       })
       .addCase(forLogin.fulfilled, (state, action) => {
-        console.log("action payload", action.payload);
         state.status = Status.SUCCESS;
         state.currentUser = action.payload;
         state.succesMessage = "Авторизація успішна!";

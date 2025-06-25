@@ -1,6 +1,5 @@
 "use client";
 
-import CompanyList from "@/components/company/tableCompanyList";
 import { WelcomeMessage } from "@/components/myStyledComponents/welcomeMessage";
 import { Button } from "@/components/ui/button";
 import instance from "@/lib/axios";
@@ -34,7 +33,6 @@ export default function UserPage() {
           <ArrowRightFromLine />
         </Button>
       </div>
-      <CompanyList />
     </div>
   );
 }

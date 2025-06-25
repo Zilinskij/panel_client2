@@ -18,7 +18,7 @@ import {
 const components: { title: string; href: string; description: string }[] = [
   {
     title: "Таблиця translaite",
-    href: "/admin/translateTable",
+    href: "/admin/translate-table",
     description:
       "Таблиця з перекладами",
   },
@@ -55,7 +55,7 @@ const components: { title: string; href: string; description: string }[] = [
 
 export function HeaderMenu() {
   return (
-    <NavigationMenu>
+    <NavigationMenu className="flex flex-col md:flex-row gap-2 md:gap-4">
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Користувачі</NavigationMenuTrigger>

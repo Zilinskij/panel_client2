@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 import ClientEditModal from "./clientEditModal";
 
 import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -34,6 +33,9 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { ClientsСolumns } from "./columns";
+import ColumnFilterButton from "../myStyledComponents/columnFilterButton";
+import { Status } from "@/store/enums/status";
+import { Skeleton } from "../ui/skeleton";
 
 type CompanyTableProps = {
   page: number;
@@ -50,8 +52,8 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
 }) => {
   useClientSocket();
   const dispatch = useDispatch<AppDispatch>();
-  const { clients, status, error, totalPages } = useSelector(
-    (state: RootState) => state.companyClients
+  const { clients, totalPages } = useSelector(
+    (state: RootState) => state.clients
   );
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
@@ -62,6 +64,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const columns = ClientsСolumns(dispatch);
+  const status = useSelector((state: RootState) => state.clients.status);
 
   const table = useReactTable({
     data: clients,
@@ -87,19 +90,24 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
 
   useEffect(() => {
     dispatch(fetchClients({ limit, page }));
-    console.log(page);
-    console.log(totalPages, "- totalpages companytable");
   }, [dispatch, limit, page]);
 
+  // if (!clients) return null;
   return (
     <div>
       <>
         <ClientEditModal />
-        {status === "loading" && <p>Завантаження...</p>}
-        {status === "failed" && <p>Помилка: {error}</p>}
-
         <div>
-          {status === "success" && clients.length > 0 && (
+          {status === Status.LOADING && Status.IDLE ? (
+            <div className="flex flex-col space-y-3">
+              <Skeleton className="h-[80px] w-full rounded-xl mt-10" />
+              <div className="space-y-2">
+                {[...Array(14)].map((_, e) => (
+                  <Skeleton key={e} className="h-10 w-full" />
+                ))}
+              </div>
+            </div>
+          ) : (
             <>
               <DropdownMenu>
                 <div className="flex justify-end">
@@ -134,7 +142,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
 
               <div className="flex overflow-y-auto overflow-x-auto max-h-[85vh] pb-4">
                 <div className="flex">
-                  <Table>
+                  <table>
                     <TableHeader className="bg-gray-50 dark:bg-gray-700 sticky top-0 z-10">
                       {table.getHeaderGroups().map((headerGroup) => (
                         <TableRow key={headerGroup.id}>
@@ -172,6 +180,17 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                                     </div>
                                   </div>
                                 )}
+                                <div>
+                                  {header.column.getCanFilter() &&
+                                    header.column.columnDef.meta
+                                      ?.headerLabel === "" && (
+                                      <div>
+                                        <ColumnFilterButton
+                                          column={header.column}
+                                        />
+                                      </div>
+                                    )}
+                                </div>
                               </div>
                             </TableHead>
                           ))}
@@ -192,7 +211,7 @@ const CompanyTable: React.FC<CompanyTableProps> = ({
                         </TableRow>
                       ))}
                     </TableBody>
-                  </Table>
+                  </table>
                 </div>
               </div>
             </>
