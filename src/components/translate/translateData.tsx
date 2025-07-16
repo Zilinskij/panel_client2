@@ -9,6 +9,7 @@ import {
   setKeystr,
   selectTblFieldsAll,
   translateByKeyTbl,
+  setExpr,
 } from "@/store/translate/translateSlice";
 import {
   ColumnFiltersState,
@@ -23,16 +24,32 @@ import { Filter } from "./searchKey";
 
 export default function TranslateData() {
   const dispatch = useDispatch<AppDispatch>();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const translData: Translate[] =
     useSelector((state: RootState) => state.translate.tableData) ?? [];
+
   const selectedKey = useSelector((state: RootState) => state.translate.keystr);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const tbl = useSelector((state: RootState) => state.translate.selectedTbl);
+const firstKeystr = useSelector((state: RootState) => state.translate.firstKeystr)
+
+  useEffect(() => {
+    const exprData = translData.find((e) => e.keystr === selectedKey);
+    if (exprData) {
+      dispatch(setExpr(exprData.expr));
+    }
+  }, [selectedKey, translData, dispatch]);
 
   useEffect(() => {
     dispatch(translateByKeyTbl(tbl));
     dispatch(selectTblFieldsAll([]));
   }, [dispatch, tbl]);
+
+  useEffect(() => {
+    if (firstKeystr && tbl) {
+      dispatch(translateByKey({ key: firstKeystr, tbl: tbl }));
+    }
+  }, [dispatch, firstKeystr, tbl]);
 
   useEffect(() => {
     if (selectedKey && tbl) {
@@ -57,6 +74,7 @@ export default function TranslateData() {
     data: translData,
     columns: ColumnsRow(),
     filterFns: {},
+    columnResizeMode: "onChange",
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     manualFiltering: true,
@@ -80,50 +98,54 @@ export default function TranslateData() {
                   }`}
                 >
                   {header.isPlaceholder ? null : (
-                    <div className="flex items-center justify-between gap-2">
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {header.column.getCanFilter() && (
-                        <Filter column={header.column} />
-                      )}
-                    </div>
+                    <>
+                      <div className="flex items-center justify-between gap-2">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                      </div>
+                      <div>
+                        {header.column.getCanFilter() && (
+                          <Filter column={header.column} />
+                        )}
+                      </div>
+                    </>
                   )}
                 </th>
               ))}
             </tr>
           ))}
         </thead>
-          <tbody>
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="even:bg-gray-50 hover:bg-gray-100 dark:even:bg-gray-800 dark:hover:bg-gray-700 text-center"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className={`border px-4 py-1 ${
-                      cell.column.id === "keystr"
-                        ? "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-500"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      if (cell.column.id === "keystr") {
-                        const value = cell.getValue();
-                        if (typeof value === "string") {
-                          dispatch(setKeystr(value));
-                        }
+        <tbody>
+          {table.getRowModel().rows.map((row) => (
+            <tr
+              key={row.id}
+              className="even:bg-gray-50 hover:bg-gray-100 dark:even:bg-gray-800 dark:hover:bg-gray-700 text-center"
+            >
+              {row.getVisibleCells().map((cell) => (
+                <td
+                  key={cell.id}
+                  className={`border px-4 py-1 ${
+                    cell.column.id === "keystr"
+                      ? "cursor-pointer hover:bg-blue-100 dark:hover:bg-gray-500"
+                      : ""
+                  }`}
+                  onClick={() => {
+                    if (cell.column.id === "keystr") {
+                      const value = cell.getValue();
+                      if (typeof value === "string") {
+                        dispatch(setKeystr(value));
                       }
-                    }}
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
+                    }
+                  }}
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );

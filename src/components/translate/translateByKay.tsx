@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
@@ -7,9 +7,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  setTranslateValue,
-} from "@/store/modals/modalsSlice";
+import { setTranslateValue } from "@/store/modals/modalsSlice";
 import { ColumnsRowTwo } from "@/constants/translateTableTwo.constants";
 import { setLang } from "@/store/translate/translateSlice";
 
@@ -60,14 +58,12 @@ export default function TranslateByKey() {
                 <td
                   key={cell.id}
                   className={`border px-4 py-1 ${i === 0 ? "w-[80px]" : ""} ${
-                    cell.column.id === "expr"
-                      ? ""
-                      : ""
+                    cell.column.id === "expr" ? "" : ""
                   } text-center`}
                   onClick={() => {
                     if (cell.column.id === "expr") {
                       dispatch(setTranslateValue(row.original));
-                      dispatch(setLang(row.original.ids!))
+                      dispatch(setLang(row.original.ids!));
                     }
                   }}
                 >

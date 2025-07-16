@@ -11,21 +11,12 @@ import instance from "@/lib/axios";
 import { HeaderMenu } from "./header.menu";
 import Link from "next/link";
 import { ModeToggle } from "../myStyledComponents/system/themeButton";
-// import HeaderMobile from "./HeaderMobile";
 
 const Header = () => {
   const [mobileShow, setMobileShow] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.user.currentUser);
   const router = useRouter();
-
-  // const toggleShowMobile = () => {
-  //   setMobileShow((val) => !val);
-  // };
-
-  // useEffect(() => {
-  //   dispatch(getMe());
-  // }, [dispatch]);
 
   useEffect(() => {
     const fetchUser = async () => {

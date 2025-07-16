@@ -4,6 +4,7 @@ import modalsReducer from "./modals/modalsSlice";
 import userReducer from "./user/userSlice";
 import clientsReducer from "./company/companyEdit";
 import translateReducer from "./translate/translateSlice";
+import companiesReducer from "./companies/companies";
 
 export const makeStore = () => {
   return configureStore({
@@ -12,6 +13,7 @@ export const makeStore = () => {
       clients: clientsReducer,
       user: userReducer,
       translate: translateReducer,
+      companies: companiesReducer,
       // LOCAL
       modals: modalsReducer,
     },

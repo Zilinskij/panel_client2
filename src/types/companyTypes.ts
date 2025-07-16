@@ -62,3 +62,30 @@ export interface ClientsValue {
 export type CustomColumnMeta = {
   headerLabel?: string;
 };
+
+export type CreateCompany = {
+  id_admuser: number;
+  company_name: string;
+  id_country: number;
+  locality: string;
+  edrpou: string;
+};
+
+export type CompanyTable = {
+  id?: number;
+  company_name: string;
+  dt_reestr: string | null;
+  is_active: boolean;
+  edrpou: string;
+  lat: number | null;
+  lon: number | null;
+  locality: string;
+  country: string;
+  dt_blocked: string | null;
+  dt_deleted: string | null;
+};
+
+export type CompanyFields = {
+  id: number;
+  country_name: string;
+}

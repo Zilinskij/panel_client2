@@ -10,6 +10,7 @@ type Transl = {
   status: Status;
   error: string | null;
   tableData: Translate[];
+  tableDataFirst: TranslateTableData | null;
   fieldsData: Translate[];
   selectedRow: Translate | null;
   selectedTbl: string;
@@ -17,6 +18,7 @@ type Transl = {
   forUpdateTable: Translate[];
   answerStatus: string | null;
   allFieldsTbl: TranslateTbl[];
+  firstKeystr: string | null;
   keystr: string;
   ids: string;
   expr: string;
@@ -34,15 +36,17 @@ type TranslateApiResponse =
 
 const initialState: Transl = {
   tableData: [],
+  tableDataFirst: null,
   fieldsData: [],
   filteredTableData: [],
   forUpdateTable: [],
   status: Status.IDLE,
   error: null,
   selectedRow: null,
-  selectedTbl: '',
+  selectedTbl: "",
   answerStatus: null,
   allFieldsTbl: [],
+  firstKeystr: null,
   keystr: "",
   ids: "",
   expr: "",
@@ -56,8 +60,7 @@ export const translateByKeyTbl = createAsyncThunk<
 >("translate-by-key-tbl", async (tbl, { rejectWithValue }) => {
   try {
     const response = await instance.post("/translate/tbl-key", { tbl });
-    const transl = response.data;
-    return transl;
+    return response.data;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return rejectWithValue("Помилка отримання даних (translate tbl-key)");
@@ -203,6 +206,12 @@ export const translateSlice = createSlice({
     setSelectedTbl: (state, action: PayloadAction<string>) => {
       state.selectedTbl = action.payload;
     },
+    takeTranslateKey: (state, action: PayloadAction<Translate[]>) => {
+      state.tableData = action.payload;
+    },
+    setFirstKeystr: (state, action: PayloadAction<string>) => {
+      state.firstKeystr = action.payload;
+    },
   },
   extraReducers: (builer) => {
     builer
@@ -212,6 +221,7 @@ export const translateSlice = createSlice({
       .addCase(translateByKeyTbl.fulfilled, (state, action) => {
         state.status = Status.SUCCESS;
         state.tableData = action.payload;
+        state.tableDataFirst = action.payload[0];
       })
       .addCase(translateByKeyTbl.rejected, (state, action) => {
         state.status = Status.FAILED;
@@ -321,6 +331,8 @@ export const {
   resetAnswerStatus,
   setFieldsData,
   setSelectedTbl,
+  takeTranslateKey,
+  setFirstKeystr,
 } = translateSlice.actions;
 
 export default translateSlice.reducer;

@@ -23,6 +23,7 @@ interface UserState {
   name: string;
   succesMessage: string;
   users: UserIst[];
+  isLoading: boolean;
 }
 
 export type DbUser = UserIst;
@@ -39,6 +40,7 @@ const initialState: UserState = {
   name: "",
   succesMessage: "",
   users: [],
+  isLoading: false,
 };
 
 export const fetchUsers = createAsyncThunk<
@@ -49,9 +51,7 @@ export const fetchUsers = createAsyncThunk<
   try {
     const response = await instance.get("/users");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const users = response.data.map(({password_hash, ...res}:any) => res)
-    console.log(users, 'from slice');
-    
+    const users = response.data.map(({ password_hash, ...res }: any) => res);
     return users;
   } catch (error) {
     return rejectWithValue("Помилка отримання даних (users)");
@@ -64,7 +64,6 @@ export const forLogin = createAsyncThunk<any, Login, { rejectValue: string }>(
   async (form, { rejectWithValue }) => {
     try {
       const res = await instance.post("/auth/login", form);
-      console.log("dispaatch res", res);
       if (res.data.id) {
         return res.data;
       }
@@ -72,8 +71,6 @@ export const forLogin = createAsyncThunk<any, Login, { rejectValue: string }>(
         return res.data.firstCheck;
       }
       if (res.status === 200) {
-        console.log("status 200 ok");
-
         return res.status;
       }
 
@@ -121,24 +118,30 @@ export const userSlice = createSlice({
       .addCase(getMe.pending, (state) => {
         state.status = Status.LOADING;
         state.error = null;
+        state.isLoading = true;
       })
       .addCase(getMe.fulfilled, (state, action) => {
         state.status = Status.SUCCESS;
         state.currentUser = action.payload;
+        state.isLoading = false
       })
       .addCase(getMe.rejected, (state) => {
         state.status = Status.FAILED;
+        state.isLoading = false
       })
       .addCase(fetchUsers.pending, (state) => {
         state.status = Status.LOADING;
+        state.isLoading = true;
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.status = Status.SUCCESS;
         state.users = action.payload;
+        state.isLoading = false;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = Status.FAILED;
         state.error = action.payload || "Помилка невідома";
+        state.isLoading = false;
       });
   },
 });

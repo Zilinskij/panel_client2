@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 
 import {
@@ -12,15 +14,32 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/store/store";
 import {
+  setFirstKeystr,
   setSelectedTbl,
   translateByKeyTbl,
 } from "@/store/translate/translateSlice";
+import { useEffect } from "react";
 
 export function DropDounTbl() {
   const tblData = useSelector(
     (state: RootState) => state.translate.allFieldsTbl
   );
+
+  const selectedTbl = useSelector(
+    (state: RootState) => state.translate.selectedTbl
+  );
   const dispatch = useDispatch<AppDispatch>();
+
+  const selectName = tblData.find((e) => e.tbl === selectedTbl)?.name;
+  const tableDataFirst = useSelector(
+    (state: RootState) => state.translate.tableDataFirst
+  );
+
+  useEffect(() => {
+    if (tableDataFirst?.keystr) {
+      dispatch(setFirstKeystr(tableDataFirst.keystr));
+    }
+  }, [dispatch, tableDataFirst]);
 
   return (
     <Select
@@ -29,8 +48,9 @@ export function DropDounTbl() {
         dispatch(translateByKeyTbl(e));
       }}
     >
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="TBL" />
+      <SelectTrigger className="w-[100%] cursor-pointer">
+        <SelectValue />
+        {selectName || "Оберіть таблицю"}
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

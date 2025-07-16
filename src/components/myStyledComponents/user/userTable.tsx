@@ -1,11 +1,3 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { AppDispatch, RootState } from "@/store/store";
 import { fetchUsers } from "@/store/user/userSlice";
 import { UserIst } from "@/types/user";
@@ -24,7 +16,7 @@ const UserTable: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const users: UserIst[] = useSelector((state: RootState) => state.user.users);
-  console.log(users);
+  const isLoading = useSelector((state: RootState) => state.user.isLoading);
 
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [columnOrder, setColumnOrder] = React.useState<ColumnOrderState>([]);
@@ -73,47 +65,59 @@ const UserTable: React.FC = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  console.log(table.getRowModel().rows, "-- ROWS");
+  if (isLoading) {
+    return (
+      <div className="flex justify-center h-[85vh]">
+        <span className="text-lg text-gray-600 dark:text-gray-300">
+          Сторінка оновлюється ...
+        </span>
+      </div>
+    );
+  }
 
   return (
     <>
-      <h2 className="text-xl font-bold mb-4">Користувачі</h2>
       <div className="flex overflow-y-auto overflow-x-auto max-h-[85vh] pb-4"></div>
-      <Table className="min-w-[800px]">
-        <TableHeader className="bg-gray-100 sticky top-0 dark:bg-gray-600">
+      <table className="w-full text-sm mr-1 table-fixed">
+        <thead className="bg-gray-200 sticky top-0 dark:bg-gray-300">
           {table.getHeaderGroups().map((headerGroup) => {
             return (
-              <TableRow key={headerGroup.id}>
+              <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead
+                  <th
                     key={header.id}
                     colSpan={header.colSpan}
-                    className="text-center border-2"
+                    className="border-1 border-white px-4 py-2 text-center font-semibold text-gray-700 dark:text-black"
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+                    {header.isPlaceholder ? null : (
+                      <div className="flex items-center justify-between gap-2">
+                        {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                  </TableHead>
+                      </div>
+                    )}
+                  </th>
                 ))}
-              </TableRow>
+              </tr>
             );
           })}
-        </TableHeader>
-        <TableBody>
+        </thead>
+        <tbody>
           {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
+            <tr
+              key={row.id}
+              className="even:bg-gray-50 hover:bg-gray-100 dark:even:bg-gray-800 dark:hover:bg-gray-700"
+            >
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
+                <td key={cell.id} className="border px-4 py-1">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
+                </td>
               ))}
-            </TableRow>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
+        </tbody>
+      </table>
     </>
   );
 };

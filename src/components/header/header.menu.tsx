@@ -39,18 +39,6 @@ const components: { title: string; href: string; description: string }[] = [
     href: "/docs/primitives/scroll-area",
     description: "Visually or semantically separates content.",
   },
-  {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
-    description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
-  },
-  {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
-    description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
-  },
 ];
 
 export function HeaderMenu() {
@@ -76,9 +64,6 @@ export function HeaderMenu() {
                   </Link>
                 </NavigationMenuLink>
               </li>
-              <ListItem href={"/admin/users"} title="Користувачі">
-                Список користувачів
-              </ListItem>
               <ListItem href="/docs/primitives/typography" title="Typography">
                 Styles for headings, paragraphs, lists...etc
               </ListItem>
@@ -94,7 +79,7 @@ export function HeaderMenu() {
                 <NavigationMenuLink asChild>
                   <Link
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/admin/companyes"
+                    href="/admin/companyTable"
                   >
                     <div className="mb-2 mt-4 text-lg font-medium">
                       Компанії
@@ -105,9 +90,8 @@ export function HeaderMenu() {
                   </Link>
                 </NavigationMenuLink>
               </li>
-
-              <ListItem href="/admin/createCompany" title="Реєстрація компанії">
-                Створення нового запису в базі
+                <ListItem href="/admin/companyes" title="Сторінка-тест-компанія">
+                Тестова сторінка `компанії`
               </ListItem>
               <ListItem href="/docs/primitives/typography" title="Typography">
                 Styles for headings, paragraphs, lists...etc
@@ -117,7 +101,7 @@ export function HeaderMenu() {
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+          <NavigationMenuTrigger>Translate</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {components.map((component) => (

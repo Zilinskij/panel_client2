@@ -35,7 +35,6 @@ export const fetchClients = createAsyncThunk<
 >("fetchClients", async ({ limit, page }, { rejectWithValue }) => {
   try {
     const res = await instance.get(`/companyes?limit=${limit}&page=${page}`);
-    console.log(res.data.pagination.totalPages);
     return { data: res.data.data, totalPages: res.data.pagination.totalPages };
   } catch (error) {
     return rejectWithValue("Помилка отримання даних (клієнтів)");
@@ -48,11 +47,7 @@ export const editClients = createAsyncThunk<
   { rejectValue: string }
 >("editClients", async (company, { rejectWithValue }) => {
   try {
-    console.log(company, "- company companyEdit");
-
     const res = await instance.put(`/companyes/update/${company.kod}`, company);
-    console.log(res.data, "- companyEdit");
-
     return res.data;
   } catch (error) {
     return rejectWithValue("Помилка редагування даних (клієнтів)");
@@ -63,12 +58,13 @@ export const updateClientFromSocket = createAction<Client[]>(
   "companyClient/updateFromSocket"
 );
 
+
+
 export const clientsSlice = createSlice({
   name: "clients",
   initialState,
   reducers: {
     setSelectedClient: (state, action: PayloadAction<Client>) => {
-      console.log(action, "- action payload client redux");
       state.selectedClient = action.payload;
     },
     clearSelectedClient: (state) => {

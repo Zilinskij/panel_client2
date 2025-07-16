@@ -19,7 +19,7 @@ export const ColumnsRowTwo = () => {
   return [
     columnHelper.accessor("ids", {
       header: "Код",
-      cell: ({ row }) => row.original.ids,
+      cell: ({ row }) => row.original.ids,      
     }),
     columnHelper.accessor("expr", {
       header: "Значення",
@@ -27,8 +27,11 @@ export const ColumnsRowTwo = () => {
         const keystrValue = useSelector(
           (state: RootState) => state.translate.keystr
         );
+        const selectedTbl = useSelector(
+          (state: RootState) => state.translate.selectedTbl
+        );
+        
         const langUk = row.original.ids === "uk";
-
         const handleDelete = async () => {
           const result = await dispatch(takeAllFields(keystrValue));
           if (takeAllFields.fulfilled.match(result)) {
@@ -45,7 +48,7 @@ export const ColumnsRowTwo = () => {
               <div className="flex">
                 <PencilLine
                   className={
-                    !langUk
+                    !langUk || selectedTbl === "appterm"
                       ? "h-5 w-8 p-1 text-green-600 cursor-pointer border-1 hover:border-green-200 rounded-xl hover:bg-gray-300 hover:text-green-200"
                       : "hidden"
                   }
@@ -60,7 +63,7 @@ export const ColumnsRowTwo = () => {
               >
                 <Trash2
                   className={
-                    !langUk
+                    !langUk || selectedTbl === "appterm"
                       ? "h-5 w-8 p-1 text-red-600 cursor-pointer border-1 border-gray-200 rounded-xl hover:bg-gray-300 hover:border-red-200 hover:text-red-400"
                       : "hidden"
                   }

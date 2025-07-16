@@ -10,6 +10,7 @@ interface ModalsState {
   updateKeyModal: boolean;
   deleteValueModal: boolean;
   searchKeyModal: boolean;
+  createCompanyModal: boolean;
   selectedTranslateValue: TranslateTableData | null;
   status: Status;
 }
@@ -21,6 +22,7 @@ const initialState: ModalsState = {
   updateKeyModal: false,
   deleteValueModal: false,
   selectedTranslateValue: null,
+  createCompanyModal: false,
   searchKeyModal: false,
   status: Status.IDLE,
 };
@@ -59,6 +61,9 @@ const companySlice = createSlice({
     setTranslateValue: (state, action: PayloadAction<TranslateTableData>) => {
       state.selectedTranslateValue = action.payload;
     },
+    toggleCreateCompanyModal: (state) => {
+      state.createCompanyModal = !state.createCompanyModal
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -93,5 +98,6 @@ export const {
   setTranslateValue,
   toggleEditKeyModal,
   toggleDeleteValueModal,
+  toggleCreateCompanyModal,
 } = companySlice.actions;
 export default companySlice.reducer;

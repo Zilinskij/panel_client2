@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 function DebouncedInput({
   value: initialValue,
   onChange,
+  debounce = 300,
   ...props
 }: {
   value: string | number;
@@ -14,8 +15,11 @@ function DebouncedInput({
   const [value, setValue] = useState(initialValue);
 
   useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
+    const timeout = setTimeout(() => {
+      setValue(initialValue);
+    }, debounce);
+    return () => clearTimeout(timeout);
+  }, [initialValue, debounce]);
 
   return (
     <input
@@ -32,11 +36,12 @@ export function Filter({ column }: { column: Column<TranslateTableData> }) {
   return (
     <div>
       <DebouncedInput
-        className="w-20 sm:w-36 border shadow rounded bg-gray-100 px-2"
-        onChange={(value) => column.setFilterValue(value)}        
+        className="w-25 text-sm px-2 py-1 border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-blue-400 top-0"
+        onChange={(value) => column.setFilterValue(value)}
         placeholder={`Пошук...`}
         type="text"
         value={(columnFilterValue ?? "") as string}
+        debounce={300}
       />
     </div>
   );
