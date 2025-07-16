@@ -12,9 +12,9 @@ import {
   fetchCompany,
   selectCompanyFields,
   setSelectedCompany,
-} from "@/store/companies/companies";
+} from "@/store/companyes/companyes";
 import { toggleCreateCompanyModal } from "@/store/modals/modalsSlice";
-import { setActualLimit, setActualPage } from "@/store/companies/companies";
+import { setActualLimit, setActualPage } from "@/store/companyes/companyes";
 import EditCompany from "./editCompany";
 
 export type CompanyTableProps = {

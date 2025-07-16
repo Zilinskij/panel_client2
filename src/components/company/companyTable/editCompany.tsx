@@ -12,7 +12,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { initialCompany } from "@/constants/companyConst";
-import { clearSelectedCompany } from "@/store/companies/companies";
+import { clearSelectedCompany } from "@/store/companyes/companyes";
 import { AppDispatch, RootState } from "@/store/store";
 import { CompanyTable } from "@/types/companyTypes";
 import React, { useEffect, useState } from "react";

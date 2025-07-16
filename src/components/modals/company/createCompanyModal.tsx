@@ -1,6 +1,6 @@
 "use client";
 
-import { createCompany, fetchCompany } from "@/store/companies/companies";
+import { createCompany, fetchCompany } from "@/store/companyes/companyes";
 import { toggleCreateCompanyModal } from "@/store/modals/modalsSlice";
 import { AppDispatch, RootState } from "@/store/store";
 import {
@@ -14,25 +14,36 @@ import {
   FieldProps,
   Form,
   Formik,
+  useFormikContext,
 } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { SelectCountry } from "@/components/company/selectCountry";
+import {
+  clearCompanyDraft,
+  setCompanyDraft,
+} from "@/store/companyesDraft/companyesDraftSlice";
 
-const initialValues: CompanyFormValues = {
-  company_name: "",
-  id_country: 11,
-  locality: "",
-  edrpou: "",
+// persist для зберігання даних з полів при незавершеній реєстрації
+const DraftUpdater = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { values } = useFormikContext<CompanyFormValues>();
+
+  useEffect(() => {
+    dispatch(setCompanyDraft(values));
+  }, [values, dispatch]);
+
+  return null;
 };
 
 const CreateCompanyModal = () => {
+  const draft = useSelector((state: RootState) => state.companyDraft);
+
   const isOpen = useSelector(
     (state: RootState) => state.modals.createCompanyModal
   );
-
   const dispatch = useDispatch<AppDispatch>();
   const limit = useSelector((state: RootState) => state.companies.actualLimit);
   const page = useSelector((state: RootState) => state.companies.actualPage);
@@ -58,6 +69,7 @@ const CreateCompanyModal = () => {
       dispatch(fetchCompany({ limit, page }));
       toast.success("Успішно створено компанію");
       handleClose();
+      dispatch(clearCompanyDraft()); // очищаю persist
     } else {
       toast.error("Виникла помилка");
     }
@@ -69,12 +81,13 @@ const CreateCompanyModal = () => {
         <div className="fixed inset-0 bg-black/40 dark:bg-gray-500/10 flex justify-center items-center z-50">
           <div className="bg-white dark:bg-background rounded-lg shadow-lg w-full max-w-lg p-6 dark:border dark:border-gray-100">
             <Formik
-              initialValues={initialValues}
+              initialValues={draft}
               validationSchema={toFormikValidationSchema(companyZodSchema)}
               onSubmit={handleSubmit}
             >
               {({ isSubmitting }) => (
                 <Form>
+                  <DraftUpdater />
                   <label className="block text-gray-700 dark:text-white mb-2">
                     Назва компанії
                   </label>
@@ -142,7 +155,6 @@ const CreateCompanyModal = () => {
                       />
                     )}
                   </Field>
-
                   <ErrorMessage
                     name="locality"
                     component="div"

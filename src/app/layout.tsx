@@ -29,10 +29,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <StoreProvider>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased px-2 w-full`}
-        >
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased px-2 w-full`}
+      >
+        <StoreProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -43,8 +43,8 @@ export default function RootLayout({
             {children}
             <Toaster position="bottom-right" />
           </ThemeProvider>
-        </body>
-      </StoreProvider>
+        </StoreProvider>
+      </body>
     </html>
   );
 }

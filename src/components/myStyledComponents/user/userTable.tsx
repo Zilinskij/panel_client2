@@ -67,7 +67,7 @@ const UserTable: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center h-[85vh]">
+     <div className="flex justify-center h-[85vh]">
         <span className="text-lg text-gray-600 dark:text-gray-300">
           Сторінка оновлюється ...
         </span>
@@ -77,7 +77,7 @@ const UserTable: React.FC = () => {
 
   return (
     <>
-      <div className="flex overflow-y-auto overflow-x-auto max-h-[85vh] pb-4"></div>
+      <div className="flex overflow-y-auto overflow-x-auto max-h-[85vh] pb-4">
       <table className="w-full text-sm mr-1 table-fixed">
         <thead className="bg-gray-200 sticky top-0 dark:bg-gray-300">
           {table.getHeaderGroups().map((headerGroup) => {
@@ -118,6 +118,7 @@ const UserTable: React.FC = () => {
           ))}
         </tbody>
       </table>
+      </div>
     </>
   );
 };
